@@ -178,6 +178,21 @@ class hr_insurance_employee_choice(osv.Model):
         'life': fields.selection(InsuranceChoice, 'Life'),
         }
 
+    def _get_year(self, cr, uid, context=None):
+        employee_id = context['default_employee_id']
+        records = self.read(cr, uid, [('employee_id','=',employee_id)], fields=['year'])
+        years = sorted([r['year'] for r in records])
+        if years:
+            year = years[-1] + 1
+        else:
+            today = date(fields.date.context_today(self, cr, uid, context=context))
+            year = today.year
+        return year
+
+    _defaults = {
+        'year': _get_year,
+        }
+
     def onchange_year(self, cr, uid, ids, year, context=None):
         today = date(fields.date.context_today(self, cr, uid, context=context))
         min_year = today.year - 3

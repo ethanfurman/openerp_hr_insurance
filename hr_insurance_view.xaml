@@ -55,7 +55,7 @@
                 ~xpath expr="//page[@name='Personal']" position='after'
                     ~page @insurance $Insurance groups='base.group_hr_manager'
                         ~div @standard_insurance .hr_insurance
-                            @hr_insurance_choice_ids nolabel='1'
+                            @hr_insurance_choice_ids nolabel='1' context="{'default_employee_id': id}"
                                 ~tree editable='top'
                                     @year
                                     @medical

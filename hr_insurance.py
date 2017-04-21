@@ -88,7 +88,6 @@ class hr_insurance_company(osv.Model):
         for rate in rates:
             id = rate['company_id'][0]
             type = rate['type']
-            print id, type
             res[id][type] = True
         return res
 

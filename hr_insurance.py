@@ -170,7 +170,7 @@ class hr_insurance_employee_choice(osv.Model):
     _order = 'year desc'
 
     _columns = {
-        'employee_id': fields.many2one('hr.employee', 'Employee', ondelete='restrict'),
+        'employee_id': fields.many2one('hr.employee', 'Employee', ondelete='cascade'),
         'year': fields.integer('Year'),
         'medical': fields.selection(MedicalInsuranceChoice, 'Medical'),
         'dental': fields.selection(InsuranceChoice, 'Dental'),

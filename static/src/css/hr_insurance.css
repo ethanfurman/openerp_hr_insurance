@@ -1,0 +1,30 @@
+@charset "utf-8";
+.hr_insurance table {
+}
+.hr_insurance table th {
+  text-align: center !important;
+  min-width: 150px;
+  max-width: 22%;
+}
+.hr_insurance table th:first-child {
+  text-align: left !important;
+  min-width: 50;
+  max-width: 12%;
+}
+.hr_insurance table td {
+  padding: 5px;
+  margin: 5px;
+  text-align: center;
+}
+.hr_insurance select {
+  max-width: 225px;
+}
+.fnx_qa_one_four {
+  max-width: 225px;
+}
+.fnx_qa_two_four {
+  max-width: 450px;
+}
+.hr_insurance .down {
+  padding-top: 10px;
+}

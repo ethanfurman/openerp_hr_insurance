@@ -54,7 +54,6 @@ Costing categories:
     'js': [
         ],
     'css':[
-        'static/src/css/hr_insurance.css',
         ],
     'data' : [
         'hr_insurance_view.xaml',

@@ -54,55 +54,7 @@
             @arch type='xml'
                 ~xpath expr="//page[@name='Personal']" position='after'
                     ~page @insurance $Insurance groups='base.group_hr_manager'
-                        // type     emp     spouse    child     declined
-                        // Medical   $        $         $            x
-                        // Dental    $        $         $
-                        // Vision    $        $         $
-                        // Life      $        $         $
                         ~div @standard_insurance .hr_insurance
-                            ~table
-                                ~tr
-                                    ~td
-                                        Year
-                                        @hr_insurance_year .oe_inline on_change="onchange_hr_insurance('', 'year', hr_insurance_choice_ids, hr_insurance_year, '')"
-                                    ~th: Medical
-                                    ~th: Dental
-                                    ~th: Vision
-                                    ~th: Life
-                                ~tr
-                                    ~th: Employee
-                                    ~td
-                                        @hr_insurance_medical_self on_change="onchange_hr_insurance('medical', 'self', hr_insurance_choice_ids, hr_insurance_year, hr_insurance_medical_self)"
-                                    ~td
-                                        @hr_insurance_dental_self on_change="onchange_hr_insurance('dental', 'self', hr_insurance_choice_ids, hr_insurance_year, hr_insurance_dental_self)"
-                                    ~td
-                                        @hr_insurance_vision_self on_change="onchange_hr_insurance('vision', 'self', hr_insurance_choice_ids, hr_insurance_year, hr_insurance_vision_self)"
-                                    ~td
-                                        @hr_insurance_life_self on_change="onchange_hr_insurance('life', 'self', hr_insurance_choice_ids, hr_insurance_year, hr_insurance_life_self)"
-                                ~tr
-                                    ~th: Spouse
-                                    ~td
-                                        @hr_insurance_medical_spouse on_change="onchange_hr_insurance('medical', 'spouse', hr_insurance_choice_ids, hr_insurance_year, hr_insurance_medical_spouse)"
-                                    ~td
-                                        @hr_insurance_dental_spouse on_change="onchange_hr_insurance('dental', 'spouse', hr_insurance_choice_ids, hr_insurance_year, hr_insurance_dental_spouse)"
-                                    ~td
-                                        @hr_insurance_vision_spouse on_change="onchange_hr_insurance('vision', 'spouse', hr_insurance_choice_ids, hr_insurance_year, hr_insurance_vision_spouse)"
-                                    ~td
-                                        @hr_insurance_life_spouse on_change="onchange_hr_insurance('life', 'spouse', hr_insurance_choice_ids, hr_insurance_year, hr_insurance_life_spouse)"
-                                ~tr
-                                    ~th: Children
-                                    ~td
-                                        @hr_insurance_medical_children on_change="onchange_hr_insurance('medical', 'children', hr_insurance_choice_ids, hr_insurance_year, hr_insurance_medical_children)"
-                                    ~td
-                                        @hr_insurance_dental_children on_change="onchange_hr_insurance('dental', 'children', hr_insurance_choice_ids, hr_insurance_year, hr_insurance_dental_children)"
-                                    ~td
-                                        @hr_insurance_vision_children on_change="onchange_hr_insurance('vision', 'children', hr_insurance_choice_ids, hr_insurance_year, hr_insurance_vision_children)"
-                                    ~td
-                                        @hr_insurance_life_children on_change="onchange_hr_insurance('life', 'children', hr_insurance_choice_ids, hr_insurance_year, hr_insurance_life_children)"
-                                ~tr
-                                    ~th: Declined
-                                    ~td
-                                        @hr_insurance_medical_declined on_change="onchange_hr_insurance('medical', 'declined', hr_insurance_choice_ids, hr_insurance_year, hr_insurance_medical_declined)"
                             @hr_insurance_choice_ids nolabel='1'
                                 ~tree editable='top'
                                     @year
@@ -110,9 +62,3 @@
                                     @dental
                                     @vision
                                     @life
-
-                // ~page @Claims position='inside'
-                //    ~separator $Workers_Compensation_Claims
-                //    @worker_comp_claim_ids context="{'default_employee_id': active_id}"
-
-

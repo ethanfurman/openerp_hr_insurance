@@ -29,6 +29,7 @@ tables/fields needed:
 
 import logging
 from osv import osv, fields
+from fnx import date
 
 _logger = logging.getLogger(__name__)
 
@@ -177,3 +178,16 @@ class hr_insurance_employee_choice(osv.Model):
         'life': fields.selection(InsuranceChoice, 'Life'),
         }
 
+    def onchange_year(self, cr, uid, ids, year, context=None):
+        today = date(fields.date.context_today(self, cr, uid, context=context))
+        min_year = today.year - 3
+        max_year = today.year + 3
+        if min_year <= year <= max_year:
+            return {}
+        else:
+            return {
+                'warning': {
+                    'title': 'Out of range error',
+                    'message': 'Year %r is not between %r and %r' % (year, min_year, max_year),
+                    },
+                }

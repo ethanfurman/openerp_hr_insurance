@@ -57,7 +57,7 @@
                         ~div @standard_insurance .hr_insurance
                             @hr_insurance_choice_ids nolabel='1' context="{'default_employee_id': id}"
                                 ~tree editable='top'
-                                    @year
+                                    @year on_change='onchange_year(year, context)'
                                     @medical
                                     @dental
                                     @vision

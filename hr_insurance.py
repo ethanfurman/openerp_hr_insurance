@@ -163,6 +163,13 @@ class hr_insurance_hr_employee(osv.Model):
             )
         }
 
+    fields.apply_groups(
+            _columns,
+            {
+                'base.group_hr_manager' : ['hr_insurance_.*'],
+                })
+
+
 class hr_insurance_employee_choice(osv.Model):
     "track yearly choices for insurance coverage"
     _name = 'hr.insurance.employee_choice'

@@ -143,7 +143,12 @@ class hr_insurance_hr_employee(osv.Model):
     _inherit = 'hr.employee'
 
     _columns = {
-        'hr_insurance_year': fields.integer('Effective Year', required=True),
+        'hr_insurance_choice_ids': fields.one2many(
+            'hr.insurance.employee_choice', 'employee_id',
+            string='Insurance',
+            ),
+        # rest of fields currently unused
+        'hr_insurance_year': fields.integer('Effective Year'),
         'hr_insurance_medical_self': fields.boolean('Medical - Self'),
         'hr_insurance_medical_spouse': fields.boolean('Medical - Spouse'),
         'hr_insurance_medical_children': fields.boolean('Medical - Children'),
@@ -157,10 +162,6 @@ class hr_insurance_hr_employee(osv.Model):
         'hr_insurance_life_self': fields.boolean('Life - Self'),
         'hr_insurance_life_spouse': fields.boolean('Life - Spouse'),
         'hr_insurance_life_children': fields.boolean('Life - Children'),
-        'hr_insurance_choice_ids': fields.one2many(
-            'hr.insurance.employee_choice', 'employee_id',
-            string='Insurance',
-            )
         }
 
     fields.apply_groups(
@@ -173,42 +174,91 @@ class hr_insurance_hr_employee(osv.Model):
 class hr_insurance_employee_choice(osv.Model):
     "track yearly choices for insurance coverage"
     _name = 'hr.insurance.employee_choice'
-    _order = 'year desc'
+    _order = 'year_month desc'
+
+    def _calc_effective_date(self, cr, uid, ids, name, args, context=None):
+        res = {}
+        for rec in self.browse(cr, uid, ids, context=context):
+            res[rec.id] = '%4d-%02d' % (rec.year, rec.month)
+        return res
 
     _columns = {
         'employee_id': fields.many2one('hr.employee', 'Employee', ondelete='cascade'),
-        'year': fields.integer('Year'),
+        'year_month': fields.char('Year-Month', required=True, size=7, oldname='year'),
         'medical': fields.selection(MedicalInsuranceChoice, 'Medical'),
         'dental': fields.selection(InsuranceChoice, 'Dental'),
         'vision': fields.selection(InsuranceChoice, 'Vision'),
         'life': fields.selection(InsuranceChoice, 'Life'),
         }
 
-    def _get_year(self, cr, uid, context=None):
-        employee_id = context['default_employee_id']
-        records = self.read(cr, uid, [('employee_id','=',employee_id)], fields=['year'])
-        years = sorted([r['year'] for r in records])
-        if years:
-            year = years[-1] + 1
-        else:
-            today = date(fields.date.context_today(self, cr, uid, context=context))
-            year = today.year
-        return year
+    def default_get(self, cr, uid, fields_list, context=None):
+        result = super(hr_insurance_employee_choice, self).default_get(cr, uid, fields_list, context=context)
+        today = date(fields.date.context_today(self, cr, uid, context=context)).replace(delta_month=+1)
+        year_month = today.strftime('%Y-%m')
+        medical = dental = vision = life = False
+        employee_id = context.get('default_employee_id')
+        if employee_id is not None:
+            records = self.read(cr, uid, [('employee_id','=',employee_id)])
+            if records:
+                records.sort(key=lambda r: r['year_month'])
+                record = records[-1]
+                medical = record['medical']
+                dental = record['dental']
+                vision = record['vision']
+                life = record['life']
+                new_date = date(record['year_month'], '%Y-%m').replace(delta_month=+1)
+                if new_date > today:
+                    year_month = new_date.strftime('%Y-%m')
+        if 'year_month' in fields_list:
+            result['year_month'] = year_month
+        if 'medical' in fields_list:
+            result['medical'] = medical
+        if 'dental' in fields_list:
+            result['dental'] = dental
+        if 'vision' in fields_list:
+            result['vision'] = vision
+        if 'life' in fields_list:
+            result['life'] = life
+        return result
 
-    _defaults = {
-        'year': _get_year,
-        }
-
-    def onchange_year(self, cr, uid, ids, year, context=None):
+    def change_date(self, cr, uid, ids, ym, context=None):
+        print ym
+        if not ym:
+            return
+        # did we get year/mo, year-mo, year mo, just year, or garbage?
+        try:
+            for sep in '/- ':
+                if sep in ym:
+                    year, month = ym.split(sep)
+                    break
+            else:
+                year = ym
+                month = '1'
+            year = int(year)
+            month = int(month)
+            ym = date(year, month, 1)
+            ym_text = ym.strftime('%Y-%m')
+        except Exception, exc:
+            _logger.error('Exception raised: %r', exc)
+            return {
+                'warning': {
+                    'title': 'Bad date',
+                    'message': 'Unable to evaluate %r\n' % (ym, ),
+                    },
+                }
         today = date(fields.date.context_today(self, cr, uid, context=context))
         min_year = today.year - 3
         max_year = today.year + 3
-        if min_year <= year <= max_year:
-            return {}
+        if min_year <= ym.year <= max_year:
+            return {
+                'value': {
+                    'year_month': ym_text,
+                    }
+                }
         else:
             return {
                 'warning': {
                     'title': 'Out of range error',
-                    'message': 'Year %r is not between %r and %r' % (year, min_year, max_year),
+                    'message': '%s is not between %r and %r\n' % (ym_text, min_year, max_year),
                     },
                 }

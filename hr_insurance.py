@@ -46,6 +46,7 @@ class InsuranceChoice(fields.SelectionEnum):
     spouse = 'w/Spouse'
     children = 'w/Children'
     family = 'w/Family'
+    declined = 'Declined'
 IC = InsuranceChoice
 
 class MedicalInsuranceChoice(fields.SelectionEnum):

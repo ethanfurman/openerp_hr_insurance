@@ -190,6 +190,7 @@ class hr_insurance_employee_choice(osv.Model):
         'dental': fields.selection(InsuranceChoice, 'Dental'),
         'vision': fields.selection(InsuranceChoice, 'Vision'),
         'life': fields.selection(InsuranceChoice, 'Life'),
+        'note': fields.text('Notes'),
         }
 
     def default_get(self, cr, uid, fields_list, context=None):

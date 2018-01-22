@@ -42,6 +42,7 @@ class InsuranceType(fields.SelectionEnum):
 IT = InsuranceType
 
 class InsuranceChoice(fields.SelectionEnum):
+    _order_ = 'self spouse children family declined'
     self = 'Self'
     spouse = 'w/Spouse'
     children = 'w/Children'
@@ -50,6 +51,7 @@ class InsuranceChoice(fields.SelectionEnum):
 IC = InsuranceChoice
 
 class MedicalInsuranceChoice(fields.SelectionEnum):
+    _order_ = 'self spouse children family declined'
     self = 'Self'
     spouse = 'w/Spouse'
     children = 'w/Children'

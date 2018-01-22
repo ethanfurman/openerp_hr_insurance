@@ -63,3 +63,10 @@
                                     @vision
                                     @life
                                     @note
+                        ~div @dependents
+                            @hr_insurance_dependents_ids nolabel='1' context="{'default_employee_id': id}"
+                                ~tree editable='bottom'
+                                    @relation
+                                    @name
+                                    @dob
+                                    @ssn

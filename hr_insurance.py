@@ -57,6 +57,12 @@ class MedicalInsuranceChoice(fields.SelectionEnum):
     declined = 'Declined'
 MIC = MedicalInsuranceChoice
 
+class InsuranceDependent(fields.SelectionEnum):
+    _order_ = 'spouse child'
+    spouse = 'Spouse'
+    child = 'Child'
+ID = InsuranceDependent
+
 def nested_property(func):
     "make defining properties simpler (from Mike Muller) [fget, fset, fdel]"
     names = dict([(n, f) for n, f in func().items() if n in ('fset', 'fget', 'fdel')])
@@ -138,6 +144,19 @@ class hr_insurance_rate(osv.Model):
         'and_family': fields.float('with Family'),
         }
 
+class hr_insurance_dependents(osv.Model):
+    "insurance dependents of employee"
+    _name = 'hr.insurance.dependent'
+    _order = 'dob'
+
+    _columns = {
+        'name': fields.char('Name', size=128),
+        'relation': fields.selection(InsuranceDependent, 'Dependents'),
+        'dob': fields.date('Birth Date'),
+        'ssn': fields.char('SSN', size=12),
+        'employee_id': fields.many2one('hr.employee', 'Employee'),
+        }
+
 class hr_insurance_hr_employee(osv.Model):
     "add fields to hr.employee to track insurance choices over time"
     _name = 'hr.employee'
@@ -147,6 +166,10 @@ class hr_insurance_hr_employee(osv.Model):
         'hr_insurance_choice_ids': fields.one2many(
             'hr.insurance.employee_choice', 'employee_id',
             string='Insurance',
+            ),
+        'hr_insurance_dependents_ids': fields.one2many(
+            'hr.insurance.dependent', 'employee_id',
+            string='Dependents',
             ),
         # rest of fields currently unused
         'hr_insurance_year': fields.integer('Effective Year'),

@@ -157,6 +157,7 @@ class hr_insurance_dependents(osv.Model):
         'dob': fields.date('Birth Date'),
         'ssn': fields.char('SSN', size=12),
         'employee_id': fields.many2one('hr.employee', 'Employee'),
+	'note': fields.text('Notes'),
         }
 
 class hr_insurance_hr_employee(osv.Model):

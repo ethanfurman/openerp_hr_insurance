@@ -54,7 +54,7 @@
             @arch type='xml'
                 ~xpath expr="//page[@name='Personal']" position='after'
                     ~page @insurance $Insurance groups='base.group_hr_manager'
-                        ~div @standard_insurance .hr_insurance
+                        ~group @standard_insurance .hr_insurance $Coverage
                             @hr_insurance_choice_ids nolabel='1' context="{'default_employee_id': id}"
                                 ~tree editable='top'
                                     @year_month on_change='change_date(year_month, context)'
@@ -63,11 +63,13 @@
                                     @vision
                                     @life
                                     @note
-                        ~div @dependents
-                            @hr_insurance_dependents_ids nolabel='1' context="{'default_employee_id': id}"
+                        ~group @dependents $Dependents
+                            @hr_insurance_dependents_ids nolabel='1' context="{'default_employee_id': id}" colspan='4'
                                 ~tree editable='bottom'
                                     @relation
                                     @name
                                     @dob
                                     @ssn
                                     @note
+                            ~label for='note' $Notes colspan='4'
+                            @hr_insurance_dependents_note nolabel='1' colspan='4'

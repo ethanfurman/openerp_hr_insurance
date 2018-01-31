@@ -174,6 +174,7 @@ class hr_insurance_hr_employee(osv.Model):
             'hr.insurance.dependent', 'employee_id',
             string='Dependents',
             ),
+	'hr_insurance_dependents_note': fields.text('Notes'),
         # rest of fields currently unused
         'hr_insurance_year': fields.integer('Effective Year'),
         'hr_insurance_medical_self': fields.boolean('Medical - Self'),

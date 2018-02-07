@@ -60,8 +60,9 @@ class MedicalInsuranceChoice(fields.SelectionEnum):
 MIC = MedicalInsuranceChoice
 
 class InsuranceDependent(fields.SelectionEnum):
-    _order_ = 'spouse child'
+    _order_ = 'spouse partner child'
     spouse = 'Spouse'
+    partner = 'Domestic Partner'
     child = 'Child'
 ID = InsuranceDependent
 
@@ -157,7 +158,7 @@ class hr_insurance_dependents(osv.Model):
         'dob': fields.date('Birth Date'),
         'ssn': fields.char('SSN', size=12),
         'employee_id': fields.many2one('hr.employee', 'Employee'),
-	'note': fields.text('Notes'),
+        'note': fields.text('Notes'),
         }
 
 class hr_insurance_hr_employee(osv.Model):
@@ -174,7 +175,7 @@ class hr_insurance_hr_employee(osv.Model):
             'hr.insurance.dependent', 'employee_id',
             string='Dependents',
             ),
-	'hr_insurance_dependents_note': fields.text('Notes'),
+        'hr_insurance_dependents_note': fields.text('Notes'),
         # rest of fields currently unused
         'hr_insurance_year': fields.integer('Effective Year'),
         'hr_insurance_medical_self': fields.boolean('Medical - Self'),

@@ -53,8 +53,9 @@
             @priority eval='16'
             @arch type='xml'
                 ~xpath expr="//page[@name='Personal']" position='after'
-                    ~page @insurance $Insurance groups='base.group_hr_manager'
-                        ~group @standard_insurance .hr_insurance $Coverage
+                    ~page @insurance $Benefits groups='base.group_hr_manager'
+                        ~separator $Insurance
+                        ~group @standard_insurance .hr_insurance
                             @hr_insurance_choice_ids nolabel='1' context="{'default_employee_id': id}"
                                 ~tree editable='top'
                                     @year_month on_change='change_date(year_month, context)'
@@ -63,7 +64,7 @@
                                     @vision
                                     @life
                                     @note
-                        ~group @dependents $Dependents
+                        ~group @dependents
                             @hr_insurance_dependents_ids nolabel='1' context="{'default_employee_id': id}" colspan='4'
                                 ~tree editable='bottom'
                                     @relation
@@ -71,5 +72,13 @@
                                     @dob
                                     @ssn
                                     @note
-                            ~label for='note' $Notes colspan='4'
+                            ~label for='note' $Notes_for_Dependents colspan='4'
                             @hr_insurance_dependents_note nolabel='1' colspan='4'
+                        ~group
+                            ~group @flexible_spending_account $Flexible_Spending_Account
+                                @hr_insurance_fsa_choice attrs="{'required': [('hr_insurance_fsa_choice','=',False)]}"
+                                @hr_insurance_fsa_amount attrs="{'invisible': [('hr_insurance_fsa_choice','in',[False, 'none'])]}"
+                            ~group @fourzeroonek $401k
+                                @hr_insurance_401k_choice attrs="{'required': [('hr_insurance_401k_choice','=',False)]}"
+                                @hr_insurance_401k_fixed_amount attrs="{'invisible': [('hr_insurance_401k_choice','in',[False,'none','percent'])]}"
+                                @hr_insurance_401k_percent_amount attrs="{'invisible': [('hr_insurance_401k_choice','in',[False,'none','fixed'])]}"

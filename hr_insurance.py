@@ -66,6 +66,20 @@ class InsuranceDependent(fields.SelectionEnum):
     child = 'Child'
 ID = InsuranceDependent
 
+class FlexibleSpendingAccountChoice(fields.SelectionEnum):
+    _order_ = 'medical child both none'
+    medical = 'Medical'
+    child = 'Child Care'
+    both = 'Medical & Child Care'
+    none = 'None'
+FSAChoice = FlexibleSpendingAccountChoice
+
+class FourZeroOneK(fields.SelectionEnum):
+    _order_ = 'fixed percent none'
+    fixed = 'Fixed'
+    percent = 'Percent'
+    none = 'None'
+
 def nested_property(func):
     "make defining properties simpler (from Mike Muller) [fget, fset, fdel]"
     names = dict([(n, f) for n, f in func().items() if n in ('fset', 'fget', 'fdel')])
@@ -176,6 +190,17 @@ class hr_insurance_hr_employee(osv.Model):
             string='Dependents',
             ),
         'hr_insurance_dependents_note': fields.text('Notes'),
+        'hr_insurance_fsa_choice': fields.selection(
+            FSAChoice,
+            string='Flexible Spending Account',
+            ),
+        'hr_insurance_fsa_amount': fields.float(string='FSA Amount'),
+        'hr_insurance_401k_choice': fields.selection(
+            FourZeroOneK,
+            string='401k Contributions',
+            ),
+        'hr_insurance_401k_fixed_amount': fields.float(string='401k Fixed Amount'),
+        'hr_insurance_401k_percent_amount': fields.float(string='401k Percent Amount'),
         # rest of fields currently unused
         'hr_insurance_year': fields.integer('Effective Year'),
         'hr_insurance_medical_self': fields.boolean('Medical - Self'),

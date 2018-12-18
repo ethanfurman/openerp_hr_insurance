@@ -58,7 +58,7 @@
                         ~group @standard_insurance .hr_insurance
                             @hr_insurance_choice_ids nolabel='1' context="{'default_employee_id': id}"
                                 ~tree editable='top'
-                                    @year_month on_change='change_date(year_month, context)'
+                                    @year_month required='1' on_change='change_date(year_month, context)'
                                     @medical
                                     @dental
                                     @vision

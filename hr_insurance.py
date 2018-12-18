@@ -308,7 +308,7 @@ class hr_insurance_employee_choice(osv.Model):
     def change_date(self, cr, uid, ids, ym, context=None):
         print ym
         if not ym:
-            return
+            return True
         # did we get year/mo, year-mo, year mo, just year, or garbage?
         try:
             for sep in '/- ':

@@ -76,9 +76,11 @@
                             @hr_insurance_dependents_note nolabel='1' colspan='4'
                         ~group
                             ~group @flexible_spending_account $Flexible_Spending_Account
-                                @hr_insurance_fsa_choice attrs="{'required': [('hr_insurance_fsa_choice','=',False)]}"
-                                @hr_insurance_fsa_amount attrs="{'invisible': [('hr_insurance_fsa_choice','in',[False, 'none'])]}"
+                                @hr_insurance_fsa_choice required='1' on_change='change_fsa(hr_insurance_fsa_choice)'
+                                @hr_insurance_fsa_amount attrs="{'required': [('hr_insurance_fsa_choice','not in',[False, 'none'])], 'invisible': [('hr_insurance_fsa_choice','in',[False, 'none'])]}"
+                                @hr_insurance_fsa_eff_date attrs="{'required': [('hr_insurance_fsa_choice','not in',[False, 'none'])], 'invisible': [('hr_insurance_fsa_choice','in',[False, 'none'])]}"
                             ~group @fourzeroonek $401k
-                                @hr_insurance_401k_choice attrs="{'required': [('hr_insurance_401k_choice','=',False)]}"
-                                @hr_insurance_401k_fixed_amount attrs="{'invisible': [('hr_insurance_401k_choice','in',[False,'none','percent'])]}"
-                                @hr_insurance_401k_percent_amount attrs="{'invisible': [('hr_insurance_401k_choice','in',[False,'none','fixed'])]}"
+                                @hr_insurance_401k_choice required='1' on_change='change_401k(hr_insurance_401k_choice)'
+                                @hr_insurance_401k_fixed_amount attrs="{'required': [('hr_insurance_401k_choice','=','fixed')], 'invisible': [('hr_insurance_401k_choice','in',[False,'none','percent'])]}"
+                                @hr_insurance_401k_percent_amount attrs="{'required': [('hr_insurance_401k_choice','=','percent')], 'invisible': [('hr_insurance_401k_choice','in',[False,'none','fixed'])]}"
+                                @hr_insurance_401k_eff_date attrs="{'required': [('hr_insurance_401k_choice','not in',[False, 'none'])], 'invisible': [('hr_insurance_401k_choice','in',[False, 'none'])]}"

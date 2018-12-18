@@ -195,12 +195,14 @@ class hr_insurance_hr_employee(osv.Model):
             string='Flexible Spending Account',
             ),
         'hr_insurance_fsa_amount': fields.float(string='FSA Amount'),
+        'hr_insurance_fsa_eff_date': fields.date('FSA Effective Date'),
         'hr_insurance_401k_choice': fields.selection(
             FourZeroOneK,
             string='401k Contributions',
             ),
         'hr_insurance_401k_fixed_amount': fields.float(string='401k Fixed Amount'),
         'hr_insurance_401k_percent_amount': fields.float(string='401k Percent Amount'),
+        'hr_insurance_401k_eff_date': fields.date('401k Effective Date'),
         # rest of fields currently unused
         'hr_insurance_year': fields.integer('Effective Year'),
         'hr_insurance_medical_self': fields.boolean('Medical - Self'),
@@ -223,6 +225,33 @@ class hr_insurance_hr_employee(osv.Model):
             {
                 'base.group_hr_manager' : ['hr_insurance_.*'],
                 })
+
+    def change_fsa(self, cr, uid, ids, choice, context=None):
+        "user changed fsa selection"
+        if choice in (False, 'none'):
+            # no action needed
+            return True
+        else:
+            # clear out other fsa fields
+            return {
+                'value': {
+                        'hr_insurance_fsa_amount': False,
+                        'hr_insurance_fsa_eff_date': False,
+                        }}
+
+    def change_401k(self, cr, uid, ids, choice, context=None):
+        "user changed 401k selection"
+        if choice in (False, 'none'):
+            # no action needed
+            return True
+        else:
+            # clear out other 401k fields
+            return {
+                'value': {
+                        'hr_insurance_401k_fixed_amount': False,
+                        'hr_insurance_401k_percent_amount': False,
+                        'hr_insurance_401k_eff_date': False,
+                        }}
 
 
 class hr_insurance_employee_choice(osv.Model):

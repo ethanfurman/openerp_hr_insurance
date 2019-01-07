@@ -78,7 +78,7 @@ class FourZeroOneK(fields.SelectionEnum):
     _order_ = 'fixed percent none'
     fixed = 'Fixed'
     percent = 'Percent'
-    none = 'None'
+    none = 'Declined'
 
 def nested_property(func):
     "make defining properties simpler (from Mike Muller) [fget, fset, fdel]"
@@ -241,17 +241,19 @@ class hr_insurance_hr_employee(osv.Model):
 
     def change_401k(self, cr, uid, ids, choice, context=None):
         "user changed 401k selection"
-        if choice in (False, 'none'):
-            # no action needed
-            return True
-        else:
-            # clear out other 401k fields
-            return {
-                'value': {
-                        'hr_insurance_401k_fixed_amount': False,
-                        'hr_insurance_401k_percent_amount': False,
-                        'hr_insurance_401k_eff_date': False,
-                        }}
+        value = {
+                'hr_insurance_401k_fixed_amount': False,
+                'hr_insurance_401k_percent_amount': False,
+                'hr_insurance_401k_eff_date': False,
+                }
+        res = {'value': value}
+        if choice is not False:
+            value.pop('hr_insurance_401k_eff_date')
+        if choice == 'fixed':
+            value.pop('hr_insurance_401k_fixed_amount')
+        elif choice == 'percent':
+            value.pop('hr_insurance_401k_percent_amount')
+        return res
 
 
 class hr_insurance_employee_choice(osv.Model):

@@ -75,9 +75,10 @@ class FlexibleSpendingAccountChoice(fields.SelectionEnum):
 FSAChoice = FlexibleSpendingAccountChoice
 
 class FourZeroOneK(fields.SelectionEnum):
-    _order_ = 'fixed percent none'
+    _order_ = 'fixed percent stopped none'
     fixed = 'Fixed'
     percent = 'Percent'
+    stopped = 'Stopped Contributing'
     none = 'Declined'
 
 def nested_property(func):
@@ -203,6 +204,7 @@ class hr_insurance_hr_employee(osv.Model):
         'hr_insurance_401k_fixed_amount': fields.float(string='401k Fixed Amount'),
         'hr_insurance_401k_percent_amount': fields.float(string='401k Percent Amount'),
         'hr_insurance_401k_eff_date': fields.date('401k Effective Date'),
+        'hr_insurance_401k_end_date': fields.date('401k Cancelled Date'),
         # rest of fields currently unused
         'hr_insurance_year': fields.integer('Effective Year'),
         'hr_insurance_medical_self': fields.boolean('Medical - Self'),
@@ -245,6 +247,7 @@ class hr_insurance_hr_employee(osv.Model):
                 'hr_insurance_401k_fixed_amount': False,
                 'hr_insurance_401k_percent_amount': False,
                 'hr_insurance_401k_eff_date': False,
+                'hr_insurance_401k_end_date': False,
                 }
         res = {'value': value}
         if choice is not False:
@@ -253,6 +256,8 @@ class hr_insurance_hr_employee(osv.Model):
             value.pop('hr_insurance_401k_fixed_amount')
         elif choice == 'percent':
             value.pop('hr_insurance_401k_percent_amount')
+        elif choice == 'stopped':
+            value.pop('hr_insurance_401k_end_date')
         return res
 
 

@@ -28,6 +28,8 @@ tables/fields needed:
 """
 
 import logging
+from openerp import SUPERUSER_ID as SU
+from openerp.tools import self_ids
 from osv import osv, fields
 from fnx import date
 
@@ -118,7 +120,7 @@ class hr_insurance_company(osv.Model):
 
     _columns = {
         'partner_id': fields.many2one('res.partner', 'Partner Record'),
-        'name_related': fields.related('partner_id', 'name', string='Name', type='char'),
+        'name': fields.related('partner_id', 'name', string='Name', type='char', store=True),
         # insurance categories and costs
         'medical': fields.function(
             _offers_type,
@@ -151,8 +153,33 @@ class hr_insurance_company(osv.Model):
 class hr_insurance_rate(osv.Model):
     _name = 'hr.insurance.rate'
     _order = 'year desc'
+    _rec_name = 'name'
+
+    def _get_name(self, cr, uid, ids, field_name, arg, context=None):
+        res = {}
+        for rate in self.browse(cr, SU, ids, context=context):
+            res[rate.id] = '%s: %s' % (rate.year, rate.company_id.name)
+        return res
+
+    def _get_company_ids(key_table, cr, uid, ids, context=None):
+        # ids are the ids changed in the foreign table twice removed (res.partner)
+        # get the ids in hr.insurance.company that track those res.partner ids, then
+        # return the ids in this table that link to the hr.insurance.company records
+        self = key_table.pool.get('hr.insurance.rate')
+        company = key_table.pool.get('hr.insurance.company')
+        company_ids = company.search(cr, SU, [('partner_id','in',ids)], context=None)
+        return self.search(cr, SU, [('company_id','in',company_ids)], context=None)
 
     _columns = {
+        'name': fields.function(
+            _get_name,
+            type='char',
+            string='Name',
+            store={
+                'hr.insurance.rate': (self_ids, ['year'], 10),
+                'res.partner': (_get_company_ids, ['name'], 10),
+                }
+            ),
         'year': fields.integer('Effective Year'),
         'company_id': fields.many2one('hr.insurance.company', 'Company'),
         'type': fields.selection(InsuranceType, 'Type'),
@@ -272,7 +299,31 @@ class hr_insurance_employee_choice(osv.Model):
             res[rec.id] = '%4d-%02d' % (rec.year, rec.month)
         return res
 
+    def _get_name(self, cr, uid, ids, field_name, arg, context=None):
+        res = {}
+        for choice in self.browse(cr, SU, ids, context=context):
+            res[choice.id] = '%s: %s' % (choice.year_month, choice.employee_id.resource_id.name)
+        return res
+
+    def _get_resource_ids(key_table, cr, uid, ids, context=None):
+        # ids are the ids changed in the foreign table twice removed (resource.resource)
+        # get the ids in hr.employee that track those ressource.resource ids, then
+        # return the ids in this table that link to the hr.employee records
+        self = key_table.pool.get('hr.workers_comp.claim')
+        resource = key_table.pool.get('resource.resource')
+        employee_ids = resource.search(cr, SU, [('resource_id','in',ids)], context=None)
+        return self.search(cr, SU, [('employee_id','in',employee_ids)], context=None)
+
     _columns = {
+        'name': fields.function(
+            _get_name,
+            type='char',
+            string='Name',
+            store={
+                'hr.insurance.employee_choice': (self_ids, ['year_month'], 10),
+                'resource.resource': (_get_resource_ids, ['name'], 10),
+                }
+            ),
         'employee_id': fields.many2one('hr.employee', 'Employee', ondelete='cascade'),
         'year_month': fields.char('Year-Month', size=7, oldname='year'),
         'medical': fields.selection(MedicalInsuranceChoice, 'Medical'),

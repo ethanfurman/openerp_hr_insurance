@@ -30,7 +30,7 @@
             @priority eval='16'
             @arch type='xml'
                 ~tree $Insurers version='7.0'
-                    @name_related
+                    @name
                     @medical
                     @dental
                     @vision
